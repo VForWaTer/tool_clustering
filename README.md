@@ -1,9 +1,8 @@
-# tool_template_python
+# Cluster tools
 
-[![Docker Image CI](https://github.com/VForWaTer/tool_template_python/actions/workflows/docker-image.yml/badge.svg)](https://github.com/VForWaTer/tool_template_python/actions/workflows/docker-image.yml)
-[![DOI](https://zenodo.org/badge/558416591.svg)](https://zenodo.org/badge/latestdoi/558416591)
+**This README is still the template readme and will be updated soon**
 
-This is the template for a generic containerized Python tool. This template can be used to generate new Github repositories from it.
+
 
 ## How generic?
 
