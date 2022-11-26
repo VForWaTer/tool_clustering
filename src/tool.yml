@@ -1,25 +1,39 @@
 tools:
-  foobar:
-    title: Foo Bar
-    description: A dummy tool to exemplify the YAML file
+  cluster:
+    title: Clustering
+    description: | 
+      Apply one of the available clustering algorithms. All implementations
+      use SciKit-Learn (cite reference here).
+      All algorithms take in a data matrix of shape (n_samples, n_features).
     version: 0.1
     parameters:
-      foo_int: 
-        type: integer
-      foo_float:
-        type: float
-      foo_string:
-        type: string
-      foo_enum:
+      method:
         type: enum
         values:
-          - foo
-          - bar
-          - baz
-      foo_array:
+          - kmeans
+          - mean_shift
+          - affinity_propagation
+          - agglomerative_single
+          - agglomerative_ward
+          - agglomerative_complete
+          - agglomerative_average
+      data:
+        type: file
+        description: | 
+          Pass a csv or dat file containing the data for clustering.
+          The input matrix needs the shape (n_samples, n_features).
+          In case there is only one feature, the tool will transform the
+          data into the correct shape (n_samples, 1)
+      n_clusters:
         type: integer
-        array: true
-      foo_matrix:
-        type: file
-      foo_csv:
-        type: file
+        description: Number of clusters to form. Will be ignored by Mean Shift and Affinity Propagation
+      random_state:
+        type: integer
+        description: Number to seed stochastic clustering algorithms. Will be ignored by Mean Shift and the Agglomerative algorithms.
+      init_args:
+        type: struct
+        description: |
+          Optional struct containing extra arguments for initialization of the
+          clustering algorithm. The selected clustering algorithm needs to accept
+          the parameters. Refer to SciKit-Learn: https://scikit-learn.org/stable/modules/classes.html#module-sklearn.cluster
+          
