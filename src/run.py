@@ -1,22 +1,55 @@
 import os
 from datetime import datetime as dt
-from pprint import pprint
+import time
+import json
 
 from json2args import get_parameter
+import numpy as np
+
+from tool_lib import init_cluster, parse_data, get_results
 
 # parse parameters
 kwargs = get_parameter()
 
 # check if a toolname was set in env
-toolname = os.environ.get('TOOL_RUN', 'foobar').lower()
+toolname = os.environ.get('TOOL_RUN', 'cluster').lower()
 
 # switch the tool
-if toolname == 'foobar':
-    # RUN the tool here and create the output in /out
-    print('This toolbox does not include any tool. Did you run the template?\n')
-    
-    # write parameters to STDOUT.log
-    pprint(kwargs)
+if toolname == 'cluster':
+    # get the parameter
+    try:
+        data = parse_data(kwargs['data'])
+    except Exception as e:
+        print(str(e))
+        raise e
+        
+    # initialize the cluster instance
+    try:
+        cl = init_cluster(
+            method=kwargs['method'],
+            n_clusters=kwargs.get('n_clusters'),
+            random_state=kwargs.get('random_state', 42),
+            **kwargs.get('init_args', {})
+        )
+    except KeyError as e:
+        print("Mandatory data is missing, please check the Tool specification.")
+        raise e
+
+    # run the Algorithm
+    t1 = time.time()
+    cl.fit(data)
+    t2 = time.time()
+    print(f"Clustering took {t2 - t1} seconds")
+
+    # get results
+    labels, centers = get_results(cl, data)
+
+    # save the results
+    np.savetxt('/out/labels.dat', labels, fmt="%d")
+    np.savetxt('/out/cluster_centers.dat', centers)
+    with open('/out/clustering.json', 'w') as f:
+        json.dump(dict(labels=labels, centers=centers), indent=4)
+
 
 # In any other case, it was not clear which tool to run
 else:
